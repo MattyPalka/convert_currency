@@ -7,6 +7,7 @@ import {
 import React from "react";
 import { Selector } from "./selector";
 import { Record } from "./components/record";
+import { Info } from "./components/info";
 
 function App() {
   const base = useBase();
@@ -24,9 +25,10 @@ function App() {
           height: "1px",
           backgroundColor: "black",
           width: "100%",
-          margin: "0.5rem 0",
+          marginTop: "0.5rem",
         }}
       />
+      <Info />
       <table
         style={{
           width: "100%",

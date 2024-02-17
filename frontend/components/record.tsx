@@ -69,12 +69,12 @@ export const Record = ({ record, darkBg }: Props) => {
 
   return (
     <tr style={getStyle()}>
-      <td style={{ textAlign: "start" }}>{record?.name || "empty field"}</td>
-      <td style={{ textAlign: "center" }}>{exchangeDate}</td>
-      <td style={{ textAlign: "end" }}>{value?.toFixed(2)}</td>
-      <td style={{ textAlign: "center" }}>{currency?.name}</td>
+      <td style={{ textAlign: "start" }}>{record?.name || "---"}</td>
+      <td style={{ textAlign: "center" }}>{exchangeDate || "---"}</td>
+      <td style={{ textAlign: "end" }}>{value?.toFixed(2) || "---"}</td>
+      <td style={{ textAlign: "center" }}>{currency?.name || "---"}</td>
       <td style={{ textAlign: "end" }}>
-        {error || `${result?.toFixed(2)} PLN`}
+        {error || `${result?.toFixed(2) || "---"} PLN`}
       </td>
     </tr>
   );
