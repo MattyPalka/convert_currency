@@ -44,12 +44,28 @@ export const Selector = () => {
         >
           <Picker
             label="Exchange date"
+            //@ts-ignore some issue with FieldType import in this file
+            allowedTypes={["date"]}
             fieldId={FieldId.ExchangeDate}
             table={table}
           />
-          <Picker label="Value" fieldId={FieldId.Value} table={table} />
-          <Picker label="Currency" fieldId={FieldId.Currency} table={table} />
           <Picker
+            label="Value"
+            fieldId={FieldId.Value}
+            table={table}
+            //@ts-ignore some issue with FieldType import in this file
+            allowedTypes={["number", "currency"]}
+          />
+          <Picker
+            label="Currency"
+            fieldId={FieldId.Currency}
+            table={table}
+            //@ts-ignore some issue with FieldType import in this file
+            allowedTypes={["singleSelect", "singleLineText"]}
+          />
+          <Picker
+            //@ts-ignore some issue with FieldType import in this file
+            allowedTypes={["number", "currency"]}
             label="Result column"
             fieldId={FieldId.Result}
             table={table}

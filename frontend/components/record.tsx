@@ -4,16 +4,20 @@ import React, { useCallback, useEffect, useState, memo } from "react";
 import { FieldId, TableId } from "../types";
 import { getExchangeValue } from "../utils/get-exchange-value";
 import { isEqual } from "lodash-es";
+import { isCurrencyString } from "../guards/isCurrencyObject";
 
 interface Props {
   record: RecordType;
   exchangeDate: string | null;
   value: number | null;
-  currency: {
-    color: string;
-    id: string;
-    name: string;
-  } | null;
+  currency:
+    | {
+        color: string;
+        id: string;
+        name: string;
+      }
+    | string
+    | null;
   result: number | null;
   darkBg?: boolean;
 }
@@ -34,9 +38,11 @@ const RecordComponent = ({
 
   const resultFieldId = globalConfig.get(FieldId.Result) as string | null;
 
+  const currencyCode = isCurrencyString(currency) ? currency : currency?.name;
+
   const convert = useCallback(async () => {
     const exchangedResult = await getExchangeValue({
-      currencyName: currency?.name,
+      currencyName: currencyCode,
       value,
       exchangeDate,
     });
@@ -52,7 +58,7 @@ const RecordComponent = ({
     if (exchangedResult.error) {
       setError(exchangedResult.error);
     }
-  }, [currency, exchangeDate, record, resultFieldId, table, value]);
+  }, [currencyCode, exchangeDate, record, resultFieldId, table, value]);
 
   useEffect(() => {
     if (!result && currency && value && exchangeDate) {
@@ -72,7 +78,7 @@ const RecordComponent = ({
       <td style={{ textAlign: "start" }}>{record?.name || "---"}</td>
       <td style={{ textAlign: "center" }}>{exchangeDate || "---"}</td>
       <td style={{ textAlign: "end" }}>{value?.toFixed(2) || "---"}</td>
-      <td style={{ textAlign: "center" }}>{currency?.name || "---"}</td>
+      <td style={{ textAlign: "center" }}>{currencyCode || "---"}</td>
       <td style={{ textAlign: "end" }}>
         {error || `${result?.toFixed(2) || "---"} PLN`}
       </td>

@@ -67,11 +67,14 @@ function App() {
                 const value = record.getCellValue(valueFieldId) as
                   | number
                   | null;
-                const currency = record.getCellValue(currencyFieldId) as {
-                  color: string;
-                  id: string;
-                  name: string;
-                } | null;
+                const currency = record.getCellValue(currencyFieldId) as
+                  | {
+                      color: string;
+                      id: string;
+                      name: string;
+                    }
+                  | string
+                  | null;
                 const result = record.getCellValue(resultFieldId) as
                   | number
                   | null;
