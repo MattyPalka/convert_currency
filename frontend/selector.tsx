@@ -14,18 +14,15 @@ export const Selector = () => {
 
   const table = base.getTableByIdIfExists(tableId);
   return (
-    <div
+    <section
       style={{
-        display: "grid",
-        gridTemplateRows: "auto auto",
-        gridTemplateColumns: "repeat(4, 1fr)",
+        display: "flex",
         gap: "1rem",
-        alignItems: "flex-end",
+        flexDirection: "column",
       }}
     >
       <div
         style={{
-          gridColumn: "1 / 5",
           display: "flex",
           flexDirection: "column",
           gap: "0.5rem",
@@ -35,7 +32,16 @@ export const Selector = () => {
         <TablePickerSynced globalConfigKey={TableId.Main} />
       </div>
       {!!table && (
-        <>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: "0.5rem",
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
           <Picker
             label="Exchange date"
             fieldId={FieldId.ExchangeDate}
@@ -43,9 +49,13 @@ export const Selector = () => {
           />
           <Picker label="Value" fieldId={FieldId.Value} table={table} />
           <Picker label="Currency" fieldId={FieldId.Currency} table={table} />
-          <Picker label="Result" fieldId={FieldId.Result} table={table} />
-        </>
+          <Picker
+            label="Result column"
+            fieldId={FieldId.Result}
+            table={table}
+          />
+        </div>
       )}
-    </div>
+    </section>
   );
 };

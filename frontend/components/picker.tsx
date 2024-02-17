@@ -10,8 +10,16 @@ interface PickerProps {
 }
 export const Picker = ({ table, fieldId, label }: PickerProps) => {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-      <label>{label}</label>
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+      <label
+        style={{
+          textTransform: "uppercase",
+          fontWeight: 500,
+          fontSize: "0.75rem",
+        }}
+      >
+        {label}
+      </label>
       <FieldPickerSynced table={table} globalConfigKey={fieldId} />
     </div>
   );

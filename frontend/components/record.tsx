@@ -1,33 +1,19 @@
 import type RecordType from "@airtable/blocks/dist/types/src/models/record";
-import { useGlobalConfig } from "@airtable/blocks/ui";
-import React from "react";
-import { FieldId } from "../types";
+import { useBase, useGlobalConfig } from "@airtable/blocks/ui";
+import React, { useEffect } from "react";
+import { FieldId, TableId } from "../types";
+import { getExchangeValue } from "../utils/get-exchange-value";
 
 interface Props {
   record: RecordType | null;
+  darkBg?: boolean;
 }
 
-const getExchangeValue = async ({
-  currencyName,
-  exchangeDate,
-  value,
-}: {
-  currencyName: string;
-  exchangeDate: string;
-  value: number;
-}) => {
-  // check if date is weekend or work with response status 404 / statusText: not fonud
-  const response = await fetch(
-    `https://api.nbp.pl/api/exchangerates/rates/a/${currencyName.toLowerCase()}/${exchangeDate}/?format=json`
-  );
-
-  const data = await response.json();
-
-  console.log("or", data);
-};
-
-export const Record = ({ record }: Props) => {
+export const Record = ({ record, darkBg }: Props) => {
+  const base = useBase();
   const globalConfig = useGlobalConfig();
+  const tableId = globalConfig.get(TableId.Main) as string | null;
+  const table = base.getTableByIdIfExists(tableId);
   const exchangeDateFieldId = globalConfig.get(FieldId.ExchangeDate) as
     | string
     | null;
@@ -46,26 +32,35 @@ export const Record = ({ record }: Props) => {
   } | null;
   const result = record.getCellValue(resultFieldId) as number | null;
 
+  useEffect(() => {
+    if (record && !result && currency && value && exchangeDate) {
+      (async () => {
+        const exchangedResult = await getExchangeValue({
+          currencyName: currency?.name,
+          value,
+          exchangeDate,
+        });
+
+        if (exchangedResult.result) {
+          table.updateRecordAsync(record, {
+            [resultFieldId]: exchangedResult.result,
+          });
+        }
+      })();
+    }
+  }, [result, currency, value, exchangeDate, record, table, resultFieldId]);
+
   if (!record) {
     return null;
   }
 
-  if (!result && currency && value && exchangeDate) {
-    getExchangeValue({ currencyName: currency.name, value, exchangeDate });
-  }
-
   return (
-    <li
-      style={{
-        listStyle: "none",
-        display: "contents",
-      }}
-    >
-      <span>{record.name}</span>
-      <span>{exchangeDate}</span>
-      <span style={{ textAlign: "end" }}>{value.toFixed(2)}</span>
-      <span>{currency.name}</span>
-      <span style={{ textAlign: "end" }}>{result?.toFixed(2)}</span>
-    </li>
+    <tr style={darkBg ? { backgroundColor: "lightgray" } : {}}>
+      <td style={{ textAlign: "start" }}>{record?.name || "empty field"}</td>
+      <td style={{ textAlign: "center" }}>{exchangeDate}</td>
+      <td style={{ textAlign: "end" }}>{value?.toFixed(2)}</td>
+      <td style={{ textAlign: "center" }}>{currency?.name}</td>
+      <td style={{ textAlign: "end" }}>{result?.toFixed(2)} PLN</td>
+    </tr>
   );
 };

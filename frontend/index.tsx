@@ -16,20 +16,38 @@ function App() {
   const table = base.getTableByIdIfExists(tableId);
   const records = useRecords(table);
   return (
-    <div style={{ padding: "1rem" }}>
+    <div style={{ padding: "1rem", minWidth: "400px" }}>
       <Selector />
 
-      <ul
+      <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(5, auto)",
-          gap: "0.5rem",
+          height: "1px",
+          backgroundColor: "black",
+          width: "100%",
+          margin: "0.5rem 0",
+        }}
+      />
+      <table
+        style={{
+          width: "100%",
         }}
       >
-        {records?.map((record) => (
-          <Record key={record.id} record={record} />
-        ))}
-      </ul>
+        <thead>
+          <tr>
+            <th style={{ borderBottom: "1px solid black" }}>Name</th>
+            <th style={{ borderBottom: "1px solid black" }}>Date</th>
+            <th style={{ borderBottom: "1px solid black" }}>Value</th>
+            <th style={{ borderBottom: "1px solid black" }}>Currency</th>
+            <th style={{ borderBottom: "1px solid black" }}>Exchanged to</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {records?.map((record, i) => (
+            <Record key={record.id} record={record} darkBg={!!(i % 2)} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
