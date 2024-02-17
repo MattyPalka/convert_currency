@@ -19,7 +19,7 @@ function App() {
   const { hasPermission } = table.checkPermissionsForUpdateRecord();
 
   return (
-    <div style={{ padding: "1rem", minWidth: "400px" }}>
+    <main style={{ padding: "1rem", minWidth: "400px" }}>
       <Selector />
 
       <div
@@ -61,7 +61,7 @@ function App() {
           </h3>
         </section>
       )}
-    </div>
+    </main>
   );
 }
 
