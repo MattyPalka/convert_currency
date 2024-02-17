@@ -1,6 +1,6 @@
 import type RecordType from "@airtable/blocks/dist/types/src/models/record";
 import { useBase, useGlobalConfig } from "@airtable/blocks/ui";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FieldId, TableId } from "../types";
 import { getExchangeValue } from "../utils/get-exchange-value";
 
@@ -12,6 +12,7 @@ interface Props {
 export const Record = ({ record, darkBg }: Props) => {
   const base = useBase();
   const globalConfig = useGlobalConfig();
+  const [error, setError] = useState<string | undefined>(undefined);
   const tableId = globalConfig.get(TableId.Main) as string | null;
   const table = base.getTableByIdIfExists(tableId);
   const exchangeDateFieldId = globalConfig.get(FieldId.ExchangeDate) as
@@ -42,9 +43,14 @@ export const Record = ({ record, darkBg }: Props) => {
         });
 
         if (exchangedResult.result) {
+          setError(undefined);
           table.updateRecordAsync(record, {
             [resultFieldId]: exchangedResult.result,
           });
+        }
+
+        if (exchangedResult.error) {
+          setError(exchangedResult.error);
         }
       })();
     }
@@ -54,13 +60,22 @@ export const Record = ({ record, darkBg }: Props) => {
     return null;
   }
 
+  const getStyle = () => {
+    if (error) {
+      return { backgroundColor: "red", color: "white" };
+    }
+    return darkBg ? { backgroundColor: "lightgray" } : {};
+  };
+
   return (
-    <tr style={darkBg ? { backgroundColor: "lightgray" } : {}}>
+    <tr style={getStyle()}>
       <td style={{ textAlign: "start" }}>{record?.name || "empty field"}</td>
       <td style={{ textAlign: "center" }}>{exchangeDate}</td>
       <td style={{ textAlign: "end" }}>{value?.toFixed(2)}</td>
       <td style={{ textAlign: "center" }}>{currency?.name}</td>
-      <td style={{ textAlign: "end" }}>{result?.toFixed(2)} PLN</td>
+      <td style={{ textAlign: "end" }}>
+        {error || `${result?.toFixed(2)} PLN`}
+      </td>
     </tr>
   );
 };

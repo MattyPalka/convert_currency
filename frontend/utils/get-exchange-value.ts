@@ -6,10 +6,8 @@ export const getExchangeValue = async ({
   currencyName: string;
   exchangeDate: string;
   value: number;
-}): Promise<{ result: number | undefined }> => {
-  // check if date is weekend or work with response status 404 / statusText: not fonud
-
-  // check if currency name is correct
+}): Promise<{ result: number | undefined; error?: string }> => {
+  // TODO check if currency name is correct
 
   const response = await fetch(
     `https://api.nbp.pl/api/exchangerates/rates/a/${currencyName.toLowerCase()}/${exchangeDate}/?format=json`
@@ -22,7 +20,6 @@ export const getExchangeValue = async ({
       return { result: +(value * mid).toFixed(2) };
     }
   } else {
-    // TODO HANDLE ERROR INFORM USER
-    return { result: undefined };
+    return { result: undefined, error: response.statusText };
   }
 };
