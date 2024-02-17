@@ -44,6 +44,7 @@ export const Record = ({ record, darkBg }: Props) => {
 
         if (exchangedResult.result) {
           setError(undefined);
+
           table.updateRecordAsync(record, {
             [resultFieldId]: exchangedResult.result,
           });
